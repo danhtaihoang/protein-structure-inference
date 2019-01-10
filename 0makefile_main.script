@@ -1,0 +1,63 @@
+#!/bin/bash
+#===============================================================================
+# step:
+echo "1 to run on local PC"
+echo "11 to run on Biowulf"
+
+echo -n "type step: "
+read step_number
+
+#===============================================================================
+if [ $step_number -le 1 ] || [ $step_number -eq 11 ]
+then
+rm *.dat
+rm *.pyc
+rm -r W
+rm -r h0
+rm -r cost
+
+mkdir W
+mkdir h0
+mkdir cost
+
+rm swarmfile.txt
+file="swarmfile.txt"
+
+fi
+#===============================================================================
+# number of aminoacids: 
+npos="n_pos.txt"
+n=$(cat "$npos")
+n=${n%.*}
+
+#for i in 0 1 2
+for (( i=0; i < $n; i++ ))
+do
+i=${i%.*}
+i0=$(printf "%03d" $i)
+#=========================================================================================
+#run program:
+if [ $step_number -eq 1 ]
+then
+echo "running $i"
+python 1main.py $i &
+fi
+
+#-----------------
+#run program all spin in Biowulf:
+if [ $step_number -eq 11 ]
+then
+for (( i=0; i < $n; i++ ))
+do
+echo "running $i"
+echo "python 1main.py $i" >> $file
+done
+fi
+
+done
+#===============================================================================
+# submit to Biowulf:
+if [ $step_number -eq 11 ]
+then
+swarm -f swarmfile.txt -t 2 -g 30.0 --time=0-04:00:00 --partition norm  #  quick # norm
+fi

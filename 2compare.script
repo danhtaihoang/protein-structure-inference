@@ -1,0 +1,11 @@
+#!/bin/bash
+#===============================================================================
+python 2collect_w_h0.py
+python 3direct_info.py
+python 3direct_info_top.py
+python 4contact_map_top.py
+python 4plot_contact_map_direct_info.py
+python 5roc_curve.py
+python 5roc_curve_scipy.py
+
+
